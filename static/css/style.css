@@ -1,0 +1,53 @@
+:root {
+    --primary: #093C5D;
+    --secondary: #3B7597;
+    --third: #6FD1D7;
+    --fourth: #5DF8D8;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar {
+    background: var(--primary);
+}
+
+.hero {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    background: url("../images/mountain.jpg") center/cover no-repeat;
+
+}
+
+.hero h1 {
+    font-weight: bold;
+}
+
+.hero p {
+    font-size: 1.2rem;
+}
+
+.btn-custom {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-custom:hover {
+    background: var(--third);
+    color: black;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.card-header {
+    background: var(--primary);
+    color: white;
+}

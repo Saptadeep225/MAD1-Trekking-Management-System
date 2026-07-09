@@ -1,0 +1,75 @@
+{% extends "user/base.html" %}
+
+{% block title %}
+
+Available Treks
+
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+Available Treks
+
+</h2>
+
+<div class="row">
+
+{% for trek in treks %}
+
+<div class="col-lg-4 mb-4">
+
+<div class="card shadow-sm h-100">
+
+<div class="card-body">
+
+<h4>{{ trek.name }}</h4>
+
+<p><strong>Location:</strong> {{ trek.location }}</p>
+
+<p><strong>Difficulty:</strong> {{ trek.difficulty }}</p>
+
+<p><strong>Duration:</strong> {{ trek.duration }} Days</p>
+
+<p><strong>Slots:</strong> {{ trek.available_slots }}/{{ trek.total_slots }}</p>
+
+<p>{{ trek.description }}</p>
+
+<form
+method="POST"
+action="{{ url_for('user.book',id=trek.id) }}">
+
+<button
+class="btn btn-success w-100"
+{% if trek.available_slots==0 %}disabled{% endif %}>
+
+Book Trek
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% else %}
+
+<div class="col-12">
+
+<div class="alert alert-info">
+
+No treks available.
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "user/base.html" %}
+
+{% block title %}
+
+Dashboard
+
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+Welcome, {{ current_user.name }}
+
+</h2>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm text-center">
+
+            <div class="card-body">
+
+                <h5>Total Bookings</h5>
+
+                <h1>{{ total_bookings }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm text-center">
+
+            <div class="card-body">
+
+                <h5>Upcoming</h5>
+
+                <h1>{{ upcoming }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm text-center">
+
+            <div class="card-body">
+
+                <h5>Completed</h5>
+
+                <h1>{{ completed }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="mt-4">
+
+    <a
+        href="{{ url_for('user.treks') }}"
+        class="btn btn-custom">
+
+        Explore Treks
+
+    </a>
+
+</div>
+
+{% endblock %}

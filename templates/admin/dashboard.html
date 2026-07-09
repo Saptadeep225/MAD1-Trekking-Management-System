@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+{% block title %}
+Dashboard
+{% endblock %}
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h5>Total Users</h5>
+                <h2>{{ total_users }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h5>Total Staff</h5>
+                <h2>{{ total_staff }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h5>Total Treks</h5>
+                <h2>{{ total_treks }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h5>Bookings</h5>
+                <h2>{{ total_bookings }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                Pending Staff Approval
+            </div>
+
+            <div class="card-body">
+                <h1 class="text-warning">
+                    {{ pending_staff }}
+                </h1>
+
+                <a href="{{ url_for('admin.staff') }}"
+                   class="btn btn-custom">
+                    View Staff
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                Quick Actions
+            </div>
+
+            <div class="card-body">
+                <a href="{{ url_for('admin.add_trek') }}"
+                   class="btn btn-success mb-2 w-100">
+                    Add Trek
+                </a>
+
+                <a href="{{ url_for('admin.treks') }}"
+                   class="btn btn-primary mb-2 w-100">
+                    Manage Treks
+                </a>
+
+                <a href="{{ url_for('admin.users') }}"
+                   class="btn btn-secondary w-100">
+                    Manage Users
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

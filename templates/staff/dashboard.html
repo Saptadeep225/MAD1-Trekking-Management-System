@@ -1,0 +1,80 @@
+{% extends "staff/base.html" %}
+
+{% block title %}
+
+Dashboard
+
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+Staff Dashboard
+
+</h2>
+
+<div class="row">
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm text-center">
+
+            <div class="card-body">
+
+                <h5>
+
+                    Assigned Treks
+
+                </h5>
+
+                <h1>
+
+                    {{ assigned_treks }}
+
+                </h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm text-center">
+
+            <div class="card-body">
+
+                <h5>
+
+                    Total Participants
+
+                </h5>
+
+                <h1>
+
+                    {{ total_participants }}
+
+                </h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="mt-4">
+
+    <a href="{{ url_for('staff.assigned_treks') }}"
+       class="btn btn-custom">
+
+        View Assigned Treks
+
+    </a>
+
+</div>
+
+{% endblock %}

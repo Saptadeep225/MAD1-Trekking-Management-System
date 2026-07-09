@@ -1,0 +1,108 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Assign Staff
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h4>Assign Staff</h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <p>
+
+                    <strong>Trek:</strong>
+                    {{ trek.name }}
+
+                </p>
+
+                <p>
+
+                    <strong>Location:</strong>
+                    {{ trek.location }}
+
+                </p>
+
+                <p>
+
+                    <strong>Difficulty:</strong>
+                    {{ trek.difficulty }}
+
+                </p>
+
+                <form method="POST">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Select Staff
+
+                        </label>
+
+                        <select
+                            name="staff_id"
+                            class="form-select">
+
+                            <option value="">
+
+                                -- Unassign Staff --
+
+                            </option>
+
+                            {% for staff in staff_list %}
+
+                                <option
+                                    value="{{ staff.id }}"
+                                    {% if trek.assigned_staff == staff.id %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ staff.name }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-success">
+
+                        Save Assignment
+
+                    </button>
+
+                    <a
+                        href="{{ url_for('admin.treks') }}"
+                        class="btn btn-secondary">
+
+                        Cancel
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

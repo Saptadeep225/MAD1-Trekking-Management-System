@@ -1,0 +1,82 @@
+{% extends "user/base.html" %}
+
+{% block title %}
+
+My Bookings
+
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+My Bookings
+
+</h2>
+
+<div class="card shadow-sm">
+
+<div class="card-body p-0">
+
+<table class="table table-striped table-hover mb-0">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>Trek</th>
+<th>Booking Date</th>
+<th>People</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for booking in bookings %}
+
+<tr>
+
+<td>{{ booking.trek.name }}</td>
+
+<td>{{ booking.booking_date.strftime('%d-%m-%Y') }}</td>
+
+<td>{{ booking.number_of_people }}</td>
+
+<td>
+
+<span class="badge bg-success">
+
+{{ booking.status }}
+
+</span>
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td colspan="4" class="text-center">
+
+No bookings found.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

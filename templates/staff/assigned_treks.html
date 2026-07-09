@@ -1,0 +1,117 @@
+{% extends "staff/base.html" %}
+
+{% block title %}
+
+Assigned Treks
+
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+
+Assigned Treks
+
+</h2>
+
+<div class="card shadow-sm">
+
+<div class="card-body p-0">
+
+<table class="table table-hover table-striped mb-0">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>Name</th>
+<th>Location</th>
+<th>Difficulty</th>
+<th>Dates</th>
+<th>Slots</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for trek in treks %}
+
+<tr>
+
+<td>{{ trek.name }}</td>
+
+<td>{{ trek.location }}</td>
+
+<td>{{ trek.difficulty }}</td>
+
+<td>
+
+{{ trek.start_date }}
+
+-
+
+{{ trek.end_date }}
+
+</td>
+
+<td>
+
+{{ trek.available_slots }}/{{ trek.total_slots }}
+
+</td>
+
+<td>
+
+{{ trek.status }}
+
+</td>
+
+<td>
+
+<a
+class="btn btn-sm btn-primary"
+href="{{ url_for('staff.update_trek',id=trek.id) }}">
+
+Update
+
+</a>
+
+<a
+class="btn btn-sm btn-success"
+href="{{ url_for('staff.participants',id=trek.id) }}">
+
+Participants
+
+</a>
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td colspan="7" class="text-center">
+
+No assigned treks.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

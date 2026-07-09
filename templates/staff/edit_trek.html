@@ -1,0 +1,112 @@
+{% extends "staff/base.html" %}
+
+{% block title %}
+
+Update Trek
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+<div class="col-md-6">
+
+<div class="card shadow-sm">
+
+<div class="card-header">
+
+<h4>
+
+Update Trek
+
+</h4>
+
+</div>
+
+<div class="card-body">
+
+<form method="POST">
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Available Slots
+
+</label>
+
+<input
+type="number"
+class="form-control"
+name="available_slots"
+value="{{ trek.available_slots }}"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Status
+
+</label>
+
+<select
+name="status"
+class="form-select">
+
+<option
+value="Open"
+{% if trek.status=="Open" %}selected{% endif %}>
+
+Open
+
+</option>
+
+<option
+value="Closed"
+{% if trek.status=="Closed" %}selected{% endif %}>
+
+Closed
+
+</option>
+
+<option
+value="Completed"
+{% if trek.status=="Completed" %}selected{% endif %}>
+
+Completed
+
+</option>
+
+</select>
+
+</div>
+
+<button class="btn btn-success">
+
+Save Changes
+
+</button>
+
+<a
+href="{{ url_for('staff.assigned_treks') }}"
+class="btn btn-secondary">
+
+Cancel
+
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

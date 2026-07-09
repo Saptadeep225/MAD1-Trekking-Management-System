@@ -1,0 +1,111 @@
+{% extends "admin/base.html" %}
+{% block title %}
+Treks
+{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Treks</h2>
+    <div class="d-flex">
+        <form method="GET" class="d-flex me-2">
+            <input
+                type="text"
+                class="form-control me-2"
+                name="search"
+                placeholder="Search Trek"
+                value="{{ search }}">
+            <button class="btn btn-primary">
+                Search
+            </button>
+        </form>
+        <a
+            href="{{ url_for('admin.add_trek') }}"
+            class="btn btn-success">
+            + Add Trek
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-striped mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Difficulty</th>
+                    <th>Duration</th>
+                    <th>Slots</th>
+                    <th>Status</th>
+                    <th>Staff</th>
+                    <th width="250">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for trek in treks %}
+                <tr>
+                    <td>{{ trek.id }}</td>
+                    <td>{{ trek.name }}</td>
+                    <td>{{ trek.location }}</td>
+                    <td>{{ trek.difficulty }}</td>
+                    <td>{{ trek.duration }} Days</td>
+                    <td>
+                        {{ trek.available_slots }}/{{ trek.total_slots }}
+                    </td>
+
+                    <td>
+                        <span class="badge bg-info">
+                            {{ trek.status }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if trek.assigned_staff %}
+                            Assigned
+                        {% else %}
+                            Not Assigned
+                        {% endif %}
+                    </td>
+                    <td>
+
+                        <a
+                            href="{{ url_for('admin.edit_trek', id=trek.id) }}"
+                            class="btn btn-sm btn-primary">
+                            Edit
+                        </a>
+
+                        <a
+                            href="{{ url_for('admin.assign_staff', id=trek.id) }}"
+                            class="btn btn-sm btn-success">
+                            Assign
+                        </a>
+
+                        {% if trek.is_deleted %}
+                            <a
+                                href="{{ url_for('admin.restore_trek', id=trek.id) }}"
+                                class="btn btn-sm btn-warning">
+                                Restore
+                            </a>
+                        {% else %}
+                            <a
+                                href="{{ url_for('admin.delete_trek', id=trek.id) }}"
+                                class="btn btn-sm btn-danger">
+                                Delete
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            {% else %}
+                <tr>
+                    <td colspan="9" class="text-center">
+                        No treks available.
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
