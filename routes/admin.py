@@ -8,9 +8,6 @@ from datetime import datetime
 admin = Blueprint("admin",__name__,url_prefix="/admin")
 
 
-# =====================================================
-# Helper Functions
-# =====================================================
 
 def admin_required(func):
     @wraps(func)
@@ -28,9 +25,6 @@ def admin_required(func):
     return wrapper
 
 
-# =====================================================
-# Dashboard
-# =====================================================
 
 @admin.route("/dashboard")
 @login_required
@@ -55,9 +49,6 @@ def admin_dashboard():
     )
 
 
-# =====================================================
-# User Management
-# =====================================================
 
 @admin.route("/users")
 @login_required
@@ -96,9 +87,6 @@ def unblacklist_user(id):
     return redirect(url_for("admin.users"))
 
 
-# =====================================================
-# Staff Management
-# =====================================================
 
 @admin.route("/staff")
 @login_required
@@ -151,9 +139,6 @@ def unblacklist_staff(id):
     flash("Staff restored successfully.", "success")
     return redirect(url_for("admin.staff"))
 
-# =====================================================
-# Trek Management
-# =====================================================
 
 @admin.route("/treks")
 @login_required
@@ -282,19 +267,13 @@ def restore_trek(id):
     db.session.commit()
     flash("Trek restored.", "success")
     return redirect(url_for("admin.treks"))
-
-
-# =====================================================
-# Booking Management
-# =====================================================
-
 @admin.route("/bookings")
 @login_required
 @admin_required
 def bookings():
     search = request.args.get("search", "")
     if search:
-        bookings = Booking.query.join(User).join(Trek).filter(
+        bookings = Booking.query.join(User, Booking.user_id == User.id).join(Trek, Booking.trek_id == Trek.id).filter(
             (User.name.contains(search)) |
             (Trek.name.contains(search))
         ).all()

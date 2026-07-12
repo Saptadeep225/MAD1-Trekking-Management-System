@@ -5,7 +5,6 @@ from models import db, User
 
 auth = Blueprint("auth", __name__)
 
-# ---------------- Home ---------------- #
 
 @auth.route("/")
 def index():
@@ -18,7 +17,6 @@ def index():
             return redirect(url_for("user.dashboard"))
     return render_template("home.html")
 
-# ---------------- Login ---------------- #
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
@@ -30,6 +28,9 @@ def login():
         password = request.form["password"]
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
+            if user.status == "blacklisted":
+                flash("Your account has been blacklisted by the administrator.", "danger")
+                return redirect(url_for("auth.login"))
             if user.role == "staff" and user.status == "pending":
                 flash("Your account is waiting for admin approval.","warning")
                 return redirect(url_for("auth.login"))
@@ -44,7 +45,6 @@ def login():
         flash("Invalid username or password.", "danger")
     return render_template("auth/login.html")
 
-# ---------------- Register ---------------- #
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
@@ -61,7 +61,6 @@ def register():
         confirm_password = request.form["confirm_password"]
         role = request.form["role"]
 
-        # Validation
         if not username or not name or not email or not password:
             flash("Please fill all required fields.", "danger")
             return redirect(url_for("auth.register"))
@@ -74,9 +73,6 @@ def register():
         if User.query.filter_by(username=username).first():
             flash("Username already exists.", "danger")
             return redirect(url_for("auth.register"))
-        if User.status == "blacklisted":
-            flash("Your account has been blacklisted by the administrator.", "danger")
-            return redirect(url_for("auth.login"))
         if User.query.filter_by(email=email).first():
             flash("Email already registered.", "danger")
             return redirect(url_for("auth.register"))
@@ -96,7 +92,6 @@ def register():
         return redirect(url_for("auth.login"))
     return render_template("auth/register.html")
 
-# ---------------- Logout ---------------- #
 
 @auth.route("/logout")
 @login_required

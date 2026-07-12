@@ -1,88 +1,87 @@
 {% extends "admin/base.html" %}
-{% block title %}
-Dashboard
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 {% block content %}
-<h2 class="mb-4">Admin Dashboard</h2>
+<div class="row align-items-center mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">Admin Dashboard</h2>
+        <p class="text-muted">Overview and management controls of trekking activities.</p>
+    </div>
+</div>
 
 <div class="row g-4">
     <div class="col-md-3">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h5>Total Users</h5>
-                <h2>{{ total_users }}</h2>
+        <div class="card shadow-sm hover-card">
+            <div class="card-body p-4 text-center">
+                <h6 class="text-uppercase text-muted fw-semibold small mb-2" style="letter-spacing: 0.05em;">Total Trekkers</h6>
+                <h2 class="display-5 fw-bold mb-0" style="color: var(--primary);">{{ total_users }}</h2>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h5>Total Staff</h5>
-                <h2>{{ total_staff }}</h2>
+        <div class="card shadow-sm hover-card">
+            <div class="card-body p-4 text-center">
+                <h6 class="text-uppercase text-muted fw-semibold small mb-2" style="letter-spacing: 0.05em;">Trek Staff</h6>
+                <h2 class="display-5 fw-bold mb-0" style="color: var(--primary);">{{ total_staff }}</h2>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h5>Total Treks</h5>
-                <h2>{{ total_treks }}</h2>
+        <div class="card shadow-sm hover-card">
+            <div class="card-body p-4 text-center">
+                <h6 class="text-uppercase text-muted fw-semibold small mb-2" style="letter-spacing: 0.05em;">Total Treks</h6>
+                <h2 class="display-5 fw-bold mb-0" style="color: var(--primary);">{{ total_treks }}</h2>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h5>Bookings</h5>
-                <h2>{{ total_bookings }}</h2>
+        <div class="card shadow-sm hover-card">
+            <div class="card-body p-4 text-center">
+                <h6 class="text-uppercase text-muted fw-semibold small mb-2" style="letter-spacing: 0.05em;">Total Bookings</h6>
+                <h2 class="display-5 fw-bold mb-0" style="color: var(--primary);">{{ total_bookings }}</h2>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
+<div class="row mt-4 g-4">
     <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header">
-                Pending Staff Approval
+        <div class="card shadow-sm h-100">
+            <div class="card-header p-3 bg-white">
+                <h5 class="card-title mb-0 fw-bold" style="color: var(--primary);">Pending Staff Approvals</h5>
             </div>
-
-            <div class="card-body">
-                <h1 class="text-warning">
-                    {{ pending_staff }}
-                </h1>
-
-                <a href="{{ url_for('admin.staff') }}"
-                   class="btn btn-custom">
-                    View Staff
-                </a>
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <p class="text-muted">Staff members waiting for registration clearance before accessing their guide dashboards.</p>
+                    <h1 class="display-3 fw-bold mb-3 text-warning">
+                        {{ pending_staff }}
+                    </h1>
+                </div>
+                <div class="mt-3">
+                    <a href="{{ url_for('admin.staff') }}?search=&status=pending" class="btn btn-custom px-4 fw-semibold">
+                        View Registrations
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header">
-                Quick Actions
+        <div class="card shadow-sm h-100">
+            <div class="card-header p-3 bg-white">
+                <h5 class="card-title mb-0 fw-bold" style="color: var(--primary);">Quick Actions</h5>
             </div>
-
-            <div class="card-body">
-                <a href="{{ url_for('admin.add_trek') }}"
-                   class="btn btn-success mb-2 w-100">
-                    Add Trek
+            <div class="card-body p-4 d-flex flex-column justify-content-center gap-2">
+                <a href="{{ url_for('admin.add_trek') }}" class="btn btn-primary py-2 fw-semibold text-white">
+                    + Create New Trek Route
                 </a>
-
-                <a href="{{ url_for('admin.treks') }}"
-                   class="btn btn-primary mb-2 w-100">
-                    Manage Treks
+                <a href="{{ url_for('admin.treks') }}" class="btn btn-outline-secondary py-2 fw-semibold">
+                    Manage Trek Routes
                 </a>
-
-                <a href="{{ url_for('admin.users') }}"
-                   class="btn btn-secondary w-100">
-                    Manage Users
+                <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary py-2 fw-semibold">
+                    Manage Registered Users
                 </a>
             </div>
         </div>

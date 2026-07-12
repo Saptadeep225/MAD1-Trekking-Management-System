@@ -1,49 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trekking Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark">
+
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold"
-           href="{{ url_for('auth.index') }}">
+        <a class="navbar-brand fw-bold text-white fs-4" href="{{ url_for('auth.index') }}">
             Trekking Management
         </a>
         <div>
-            <a href="{{ url_for('auth.login') }}"
-               class="btn btn-outline-light me-2">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light me-2 px-4">
                 Login
             </a>
-            <a href="{{ url_for('auth.register') }}"
-               class="btn btn-light">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-light px-4" style="color: var(--primary); font-weight: 600;">
                 Register
             </a>
         </div>
     </div>
 </nav>
 
+<main class="main-content container my-5">
+    <section class="hero shadow-lg p-5 text-white position-relative overflow-hidden">
+        <div class="container py-5 max-w-600 ms-lg-5">
+            <h1 class="display-3 fw-bold mb-3" style="letter-spacing: -0.03em; line-height: 1.1;">
+                Explore Nature's Greatest Trails
+            </h1>
+            <p class="lead mb-4 text-white-50" style="font-weight: 400; font-size: 1.25rem;">
+                Discover breathtaking routes, connect with certified trek guides, and book your next adventure seamlessly.
+            </p>
+            <div class="d-flex flex-wrap gap-3">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-lg btn-custom px-4 py-3 fw-semibold">
+                    Get Started
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-lg btn-outline-light px-4 py-3 fw-semibold">
+                    Member Login
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
 
-<section class="hero">
-    <div class="container text-center">
-        <h1 class="display-3 fw-bold">
-            Explore Nature
-        </h1>
-        <p class="lead">
-            Book amazing trekking experiences with ease.
-        </p>
-        <a href="{{ url_for('auth.register') }}"
-           class="btn btn-lg btn-custom mt-3">
-            Get Started
-        </a>
+<footer class="text-center py-4 border-top mt-auto bg-white">
+    <div class="container text-muted small">
+        &copy; 2026 Trekking Management Application. All rights reserved.
     </div>
-</section>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

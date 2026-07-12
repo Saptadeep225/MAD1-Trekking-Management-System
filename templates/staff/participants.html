@@ -1,46 +1,59 @@
 {% extends "staff/base.html" %}
-{% block title %}
-Participants
-{% endblock %}
+{% block title %}Participants{% endblock %}
 {% block content %}
 
-<h2 class="mb-4">
-{{ trek.name }} Participants
-</h2>
+<div class="row align-items-center mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">Trekker List</h2>
+        <p class="text-muted">Registered trekkers for <strong style="color: var(--primary);">{{ trek.name }}</strong></p>
+    </div>
+</div>
 
 <div class="card shadow-sm">
-<div class="card-body p-0">
-<table class="table table-striped table-hover mb-0">
-<thead class="table-dark">
-
-<tr>
-<th>Name</th>
-<th>Email</th>
-<th>Phone</th>
-<th>People</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-{% for booking in bookings %}
-<tr>
-
-<td>{{ booking.user.name }}</td>
-<td>{{ booking.user.email }}</td>
-<td>{{ booking.user.phone }}</td>
-<td>{{ booking.number_of_people }}</td>
-<td>{{ booking.status }}</td>
-</tr>
-{% else %}
-<tr>
-<td colspan="5" class="text-center">
-No participants yet.
-</td>
-
-</tr>
-{% endfor %}
-</tbody>
-</table>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Trekker Name</th>
+                    <th>Email Address</th>
+                    <th>Contact Phone</th>
+                    <th>Slots Booked</th>
+                    <th class="pe-4">Booking Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for booking in bookings %}
+                <tr>
+                    <td class="ps-4 fw-semibold">{{ booking.user.name }}</td>
+                    <td>{{ booking.user.email }}</td>
+                    <td>{{ booking.user.phone or '-' }}</td>
+                    <td>{{ booking.number_of_people }} Person</td>
+                    <td class="pe-4">
+                        {% if booking.status == "Booked" %}
+                            <span class="badge bg-success text-white">Booked</span>
+                        {% elif booking.status == "Completed" %}
+                            <span class="badge bg-info text-white">Completed</span>
+                        {% else %}
+                            <span class="badge bg-secondary text-white">{{ booking.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                        No trekkers registered for this expedition yet.
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<div class="mt-4">
+    <a href="{{ url_for('staff.assigned_treks') }}" class="btn btn-outline-secondary">
+        &larr; Back to Assigned Treks
+    </a>
 </div>
+
 {% endblock %}

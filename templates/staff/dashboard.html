@@ -1,80 +1,36 @@
 {% extends "staff/base.html" %}
-
-{% block title %}
-
-Dashboard
-
-{% endblock %}
-
+{% block title %}Dashboard{% endblock %}
 {% block content %}
 
-<h2 class="mb-4">
-
-Staff Dashboard
-
-</h2>
-
-<div class="row">
-
-    <div class="col-md-6">
-
-        <div class="card shadow-sm text-center">
-
-            <div class="card-body">
-
-                <h5>
-
-                    Assigned Treks
-
-                </h5>
-
-                <h1>
-
-                    {{ assigned_treks }}
-
-                </h1>
-
-            </div>
-
-        </div>
-
+<div class="row align-items-center mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">Welcome Back, Guide!</h2>
+        <p class="text-muted">Here is an overview of your assigned expeditions and participants.</p>
     </div>
-
-    <div class="col-md-6">
-
-        <div class="card shadow-sm text-center">
-
-            <div class="card-body">
-
-                <h5>
-
-                    Total Participants
-
-                </h5>
-
-                <h1>
-
-                    {{ total_participants }}
-
-                </h1>
-
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
 
-<div class="mt-4">
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm hover-card">
+            <div class="card-body p-4 text-center">
+                <h6 class="text-uppercase text-muted fw-semibold small mb-2" style="letter-spacing: 0.05em;">Assigned Treks</h6>
+                <h2 class="display-4 fw-bold mb-3" style="color: var(--primary);">{{ assigned_treks }}</h2>
+                <a href="{{ url_for('staff.assigned_treks') }}" class="btn btn-custom px-4 fw-semibold">
+                    Manage Treks
+                </a>
+            </div>
+        </div>
+    </div>
 
-    <a href="{{ url_for('staff.assigned_treks') }}"
-       class="btn btn-custom">
-
-        View Assigned Treks
-
-    </a>
-
+    <div class="col-md-6">
+        <div class="card shadow-sm hover-card">
+            <div class="card-body p-4 text-center">
+                <h6 class="text-uppercase text-muted fw-semibold small mb-2" style="letter-spacing: 0.05em;">Total Participants</h6>
+                <h2 class="display-4 fw-bold mb-3" style="color: var(--primary);">{{ total_participants }}</h2>
+                <span class="text-muted small">Registered across all active expeditions</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

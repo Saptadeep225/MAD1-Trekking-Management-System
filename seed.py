@@ -9,9 +9,6 @@ from models import db, User, Trek, Booking
 
 with app.app_context():
 
-    # ---------------------------------
-    # Clear Existing Data
-    # ---------------------------------
 
     Booking.query.delete()
     Trek.query.delete()
@@ -22,9 +19,6 @@ with app.app_context():
     print("Old data cleared.")
 
 
-    # ---------------------------------
-    # Staff
-    # ---------------------------------
 
     staff_names = [
         "Rahul",
@@ -52,9 +46,6 @@ with app.app_context():
     print("Staff Created")
 
 
-    # ---------------------------------
-    # Users
-    # ---------------------------------
 
     first_names = [
         "Arjun","Neha","Karan","Riya","Ankit",
@@ -80,9 +71,6 @@ with app.app_context():
     print("Users Created")
 
 
-    # ---------------------------------
-    # Treks
-    # ---------------------------------
 
     trek_data = [
         ("Sandakphu", "West Bengal", "Hard"),
@@ -122,9 +110,6 @@ with app.app_context():
     print("Treks Created")
 
 
-    # ---------------------------------
-    # Bookings
-    # ---------------------------------
 
     for user in users:
         booked = random.sample(

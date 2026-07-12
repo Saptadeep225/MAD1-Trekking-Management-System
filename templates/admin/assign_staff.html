@@ -1,108 +1,46 @@
 {% extends "admin/base.html" %}
-
-{% block title %}
-Assign Staff
-{% endblock %}
-
+{% block title %}Assign Staff{% endblock %}
 {% block content %}
 
 <div class="row justify-content-center">
-
     <div class="col-md-6">
-
         <div class="card shadow-sm">
-
-            <div class="card-header">
-
-                <h4>Assign Staff</h4>
-
+            <div class="card-header py-3 bg-white">
+                <h4 class="mb-0 fw-bold" style="color: var(--primary)">Assign Trek Staff</h4>
             </div>
 
-            <div class="card-body">
-
-                <p>
-
-                    <strong>Trek:</strong>
-                    {{ trek.name }}
-
-                </p>
-
-                <p>
-
-                    <strong>Location:</strong>
-                    {{ trek.location }}
-
-                </p>
-
-                <p>
-
-                    <strong>Difficulty:</strong>
-                    {{ trek.difficulty }}
-
-                </p>
+            <div class="card-body p-4">
+                <div class="mb-4 p-3 bg-light rounded border">
+                    <p class="mb-2"><strong>Trek:</strong> {{ trek.name }}</p>
+                    <p class="mb-2"><strong>Location:</strong> {{ trek.location }}</p>
+                    <p class="mb-0"><strong>Difficulty:</strong> {{ trek.difficulty }}</p>
+                </div>
 
                 <form method="POST">
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-
-                            Select Staff
-
-                        </label>
-
-                        <select
-                            name="staff_id"
-                            class="form-select">
-
-                            <option value="">
-
-                                -- Unassign Staff --
-
-                            </option>
-
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Select Trek Guide / Staff</label>
+                        <select name="staff_id" class="form-select">
+                            <option value="">-- Unassign Staff (No Guide) --</option>
                             {% for staff in staff_list %}
-
-                                <option
-                                    value="{{ staff.id }}"
-                                    {% if trek.assigned_staff == staff.id %}
-                                        selected
-                                    {% endif %}>
-
-                                    {{ staff.name }}
-
+                                <option value="{{ staff.id }}" {% if trek.assigned_staff == staff.id %}selected{% endif %}>
+                                    {{ staff.name }} ({{ staff.username }})
                                 </option>
-
                             {% endfor %}
-
                         </select>
-
                     </div>
 
-                    <button
-                        type="submit"
-                        class="btn btn-success">
-
-                        Save Assignment
-
-                    </button>
-
-                    <a
-                        href="{{ url_for('admin.treks') }}"
-                        class="btn btn-secondary">
-
-                        Cancel
-
-                    </a>
-
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-custom px-4 fw-semibold">
+                            Save Assignment
+                        </button>
+                        <a href="{{ url_for('admin.treks') }}" class="btn btn-outline-secondary px-4">
+                            Cancel
+                        </a>
+                    </div>
                 </form>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 {% endblock %}

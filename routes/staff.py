@@ -6,9 +6,6 @@ from models import db, Trek, Booking, User
 staff = Blueprint("staff", __name__, url_prefix="/staff")
 
 
-#=====================================================
-# Helper Functions
-#=====================================================
 
 def staff_required(func):
     @wraps(func)
@@ -25,9 +22,6 @@ def staff_required(func):
     return wrapper
 
 
-#====================================================
-# Staff Dashboard
-#====================================================
 
 @staff.route("/dashboard")
 @login_required
@@ -49,9 +43,6 @@ def staff_dashboard():
     )
 
 
-#====================================================
-# Trek Management
-#====================================================
 @staff.route("/treks/update/<int:id>", methods=["GET", "POST"])
 @login_required
 @staff_required
@@ -61,19 +52,35 @@ def update_trek(id):
         flash("Access Denied!", "danger")
         return redirect(url_for("staff.assigned_treks"))
     if request.method == "POST":
-        trek.available_slots = request.form["available_slots"]
-        trek.status = request.form["status"]
-        db.session.commit()
-        flash("Trek updated successfully.", "success")
-        return redirect(url_for("staff.assigned_treks"))
+        try:
+            available_slots = int(request.form["available_slots"])
+            if available_slots < 0:
+                flash("Available slots cannot be negative.", "danger")
+                return render_template("staff/edit_trek.html", trek=trek)
+            if available_slots > trek.total_slots:
+                flash(f"Available slots cannot exceed total slots ({trek.total_slots}).", "danger")
+                return render_template("staff/edit_trek.html", trek=trek)
+            
+            trek.available_slots = available_slots
+            new_status = request.form["status"]
+            trek.status = new_status
+            
+            if new_status == "Completed":
+                for booking in trek.bookings:
+                    if booking.status == "Booked":
+                        booking.status = "Completed"
+            
+            db.session.commit()
+            flash("Trek updated successfully.", "success")
+            return redirect(url_for("staff.assigned_treks"))
+        except ValueError:
+            flash("Invalid slots format.", "danger")
+            return render_template("staff/edit_trek.html", trek=trek)
     return render_template(
         "staff/edit_trek.html",
         trek=trek
     )
 
-#====================================================
-# View Assigned Treks
-#====================================================
 
 @staff.route("/treks")
 @login_required
@@ -88,9 +95,6 @@ def assigned_treks():
     )
 
 
-#====================================================
-# View Participants for a Trek
-#====================================================
 
 @staff.route("/participants/<int:id>")
 @login_required

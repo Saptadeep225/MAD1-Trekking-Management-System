@@ -1,112 +1,48 @@
 {% extends "staff/base.html" %}
-
-{% block title %}
-
-Update Trek
-
-{% endblock %}
-
+{% block title %}Update Trek Status{% endblock %}
 {% block content %}
 
 <div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header py-3 bg-white">
+                <h4 class="mb-0 fw-bold" style="color: var(--primary)">Update Trek Status</h4>
+            </div>
 
-<div class="col-md-6">
+            <div class="card-body p-4">
+                <div class="mb-4 p-3 bg-light rounded border">
+                    <h5 class="fw-bold mb-1" style="color: var(--primary);">{{ trek.name }}</h5>
+                    <p class="text-muted small mb-0">{{ trek.location }} &bull; {{ trek.difficulty }} &bull; {{ trek.duration }} Days</p>
+                </div>
 
-<div class="card shadow-sm">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Available Slots</label>
+                        <input type="number" min="0" max="{{ trek.total_slots }}" class="form-control" name="available_slots" value="{{ trek.available_slots }}" required>
+                        <div class="form-text">Maximum total slots configured for this trek: {{ trek.total_slots }}</div>
+                    </div>
 
-<div class="card-header">
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Expedition Status</label>
+                        <select name="status" class="form-select">
+                            <option value="Open" {% if trek.status == "Open" %}selected{% endif %}>Open (Booking Active)</option>
+                            <option value="Closed" {% if trek.status == "Closed" %}selected{% endif %}>Closed (Booking Disabled)</option>
+                            <option value="Completed" {% if trek.status == "Completed" %}selected{% endif %}>Completed (Expedition Ended)</option>
+                        </select>
+                    </div>
 
-<h4>
-
-Update Trek
-
-</h4>
-
-</div>
-
-<div class="card-body">
-
-<form method="POST">
-
-<div class="mb-3">
-
-<label class="form-label">
-
-Available Slots
-
-</label>
-
-<input
-type="number"
-class="form-control"
-name="available_slots"
-value="{{ trek.available_slots }}"
-required>
-
-</div>
-
-<div class="mb-3">
-
-<label class="form-label">
-
-Status
-
-</label>
-
-<select
-name="status"
-class="form-select">
-
-<option
-value="Open"
-{% if trek.status=="Open" %}selected{% endif %}>
-
-Open
-
-</option>
-
-<option
-value="Closed"
-{% if trek.status=="Closed" %}selected{% endif %}>
-
-Closed
-
-</option>
-
-<option
-value="Completed"
-{% if trek.status=="Completed" %}selected{% endif %}>
-
-Completed
-
-</option>
-
-</select>
-
-</div>
-
-<button class="btn btn-success">
-
-Save Changes
-
-</button>
-
-<a
-href="{{ url_for('staff.assigned_treks') }}"
-class="btn btn-secondary">
-
-Cancel
-
-</a>
-
-</form>
-
-</div>
-
-</div>
-
-</div>
-
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-custom px-4 fw-semibold">
+                            Save Changes
+                        </button>
+                        <a href="{{ url_for('staff.assigned_treks') }}" class="btn btn-outline-secondary px-4">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

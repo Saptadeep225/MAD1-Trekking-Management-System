@@ -1,93 +1,82 @@
 {% extends "admin/base.html" %}
-{% block title %}
-Staff
-{% endblock %}
+{% block title %}Staff Management{% endblock %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Staff Management</h2>
-    <form method="GET" class="d-flex">
-        <input
-            type="text"
-            name="search"
-            class="form-control me-2"
-            placeholder="Search Staff"
-            value="{{ search }}">
-        <button
-            class="btn btn-primary">
-            Search
-        </button>
-    </form>
+<div class="row align-items-center mb-4">
+    <div class="col-md-6">
+        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">Staff Management</h2>
+        <p class="text-muted mb-0">Approve guide registration requests and track their status.</p>
+    </div>
+    <div class="col-md-6 mt-3 mt-md-0">
+        <form method="GET" class="d-flex justify-content-md-end">
+            <div class="input-group" style="max-width: 350px;">
+                <input type="text" name="search" class="form-control" placeholder="Search staff by name..." value="{{ search }}">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="card shadow-sm">
-    <div class="card-body p-0">
-        <table class="table table-hover table-striped mb-0">
-            <thead class="table-dark">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 bg-white">
+            <thead class="table-light">
                 <tr>
-                    <th>ID</th>
+                    <th class="ps-4">ID</th>
                     <th>Name</th>
                     <th>Username</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Status</th>
-                    <th width="220">Action</th>
+                    <th class="text-end pe-4" width="220">Action</th>
                 </tr>
             </thead>
-
             <tbody>
             {% for member in staff %}
                 <tr>
-                    <td>{{ member.id }}</td>
-                    <td>{{ member.name }}</td>
+                    <td class="ps-4 text-muted fw-semibold">#{{ member.id }}</td>
+                    <td class="fw-semibold">{{ member.name }}</td>
                     <td>{{ member.username }}</td>
                     <td>{{ member.email }}</td>
-                    <td>{{ member.phone }}</td>
+                    <td>{{ member.phone or '-' }}</td>
                     <td>
                         {% if member.status == "approved" %}
-                            <span class="badge bg-success">
+                            <span class="badge bg-success-subtle text-success border border-success-subtle">
                                 Approved
                             </span>
                         {% elif member.status == "pending" %}
-                            <span class="badge bg-warning text-dark">
-                                Pending
+                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle text-dark">
+                                Pending Approval
                             </span>
                         {% elif member.status == "blacklisted" %}
-                            <span class="badge bg-danger">
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
                                 Blacklisted
                             </span>
                         {% endif %}
                     </td>
-
-                    <td>
+                    <td class="text-end pe-4">
                         {% if member.status == "pending" %}
-                            <a
-                                href="{{ url_for('admin.approve_staff', id=member.id) }}"
-                                class="btn btn-sm btn-success">
+                            <a href="{{ url_for('admin.approve_staff', id=member.id) }}" class="btn btn-sm btn-success text-white fw-semibold me-1">
                                 Approve
                             </a>
+                            <a href="{{ url_for('admin.blacklist_staff', id=member.id) }}" class="btn btn-sm btn-outline-danger">
+                                Reject
+                            </a>
                         {% elif member.status == "approved" %}
-                            <a
-                                href="{{ url_for('admin.blacklist_staff', id=member.id) }}"
-                                class="btn btn-sm btn-danger">
+                            <a href="{{ url_for('admin.blacklist_staff', id=member.id) }}" class="btn btn-sm btn-outline-danger">
                                 Blacklist
                             </a>
                         {% elif member.status == "blacklisted" %}
-
-                            <a
-                                href="{{ url_for('admin.unblacklist_staff', id=member.id) }}"
-                                class="btn btn-sm btn-primary">
+                            <a href="{{ url_for('admin.unblacklist_staff', id=member.id) }}" class="btn btn-sm btn-outline-success">
                                 Restore
                             </a>
-
                         {% endif %}
                     </td>
                 </tr>
-
             {% else %}
                 <tr>
-                    <td colspan="7" class="text-center">
-                        No staff members found.
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        No staff members found matching your search.
                     </td>
                 </tr>
             {% endfor %}

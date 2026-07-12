@@ -17,9 +17,6 @@ from models import db, Trek, Booking
 user = Blueprint("user",__name__,url_prefix="/user")
 
 
-#====================================
-# Helper Functions
-#====================================
 
 def user_required(func):
     @wraps(func)
@@ -29,13 +26,13 @@ def user_required(func):
         if current_user.role != "user":
             flash("Access Denied!", "danger")
             return redirect(url_for("auth.login"))
+        if current_user.status != "approved":
+            flash("Your account has been blacklisted or is not approved.", "danger")
+            return redirect(url_for("auth.login"))
         return func(*args, **kwargs)
     return wrapper
 
 
-#====================================
-# Dashboard
-#====================================
 
 @user.route("/dashboard")
 @login_required
@@ -60,9 +57,6 @@ def dashboard():
     )
 
 
-#====================================
-# View Treks
-#====================================
 
 @user.route("/treks")
 @login_required
@@ -93,15 +87,15 @@ def treks():
         location=location
     )
 
-#====================================
-# Book Trek
-#====================================
 
 @user.route("/book/<int:id>", methods=["POST"])
 @login_required
 @user_required
 def book(id):
     trek = Trek.query.get_or_404(id)
+    if trek.status != "Open" or trek.is_deleted:
+        flash("This trek is not available for booking.", "danger")
+        return redirect(url_for("user.treks"))
     if trek.available_slots <= 0:
         flash("No slots available.", "danger")
         return redirect(url_for("user.treks"))
@@ -129,9 +123,6 @@ def book(id):
         return redirect(url_for("user.bookings"))
 
 
-#====================================
-# My Bookings
-#====================================
 
 @user.route("/bookings")
 @login_required
@@ -146,9 +137,6 @@ def bookings():
     )
 
 
-#====================================
-# Profile
-#====================================
 
 @user.route("/profile", methods=["GET", "POST"])
 @login_required
