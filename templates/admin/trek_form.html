@@ -15,7 +15,7 @@
             </div>
 
             <div class="card-body p-4">
-                <form method="POST">
+                <form method="POST" data-is-edit="{% if trek and trek.id is defined %}true{% else %}false{% endif %}" data-booked-slots="{% if booked_slots is defined %}{{ booked_slots }}{% else %}0{% endif %}">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Trek Name</label>
@@ -107,8 +107,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const availableSlotsInput = document.querySelector('input[name="available_slots"]');
     const form = document.querySelector('form');
 
-    const isEdit = {% if trek and trek.id is defined %}true{% else %}false{% endif %};
-    const bookedSlots = {% if booked_slots is defined %}{{ booked_slots }}{% else %}0{% endif %};
+    const isEdit = form.dataset.isEdit === "true";
+    const bookedSlots = parseInt(form.dataset.bookedSlots || "0", 10);
 
     // Set minimum start date for Add Trek (not edit)
     if (!isEdit) {
