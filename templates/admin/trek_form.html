@@ -39,7 +39,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Duration (Days)</label>
-                            <input type="number" min="1" class="form-control" name="duration" value="{{ trek.duration if trek else '' }}" placeholder="e.g. 5" required>
+                            <input type="number" min="1" class="form-control bg-light" name="duration" value="{{ trek.duration if trek else '' }}" placeholder="e.g. 5" required readonly style="cursor: not-allowed;">
                         </div>
                     </div>
 
@@ -54,6 +54,18 @@
                             <input type="number" min="0" class="form-control" name="available_slots" value="{{ trek.available_slots if trek else '' }}" placeholder="e.g. 30" required>
                         </div>
                     </div>
+                    {% if booked_slots is defined and booked_slots > 0 %}
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="alert alert-warning py-2 mb-0" style="font-size: 0.9em;">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong>Active Bookings Note:</strong> This trek has <strong>{{ booked_slots }}</strong> active booking(s). 
+                                Total slots must be at least <strong>{{ booked_slots }}</strong>. 
+                                Available slots cannot exceed <strong>{{ trek.total_slots - booked_slots }}</strong>.
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -85,4 +97,107 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const startDateInput = document.querySelector('input[name="start_date"]');
+    const endDateInput = document.querySelector('input[name="end_date"]');
+    const durationInput = document.querySelector('input[name="duration"]');
+    const totalSlotsInput = document.querySelector('input[name="total_slots"]');
+    const availableSlotsInput = document.querySelector('input[name="available_slots"]');
+    const form = document.querySelector('form');
+
+    const isEdit = {% if trek and trek.id is defined %}true{% else %}false{% endif %};
+    const bookedSlots = {% if booked_slots is defined %}{{ booked_slots }}{% else %}0{% endif %};
+
+    // Set minimum start date for Add Trek (not edit)
+    if (!isEdit) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const localToday = `${yyyy}-${mm}-${dd}`;
+        startDateInput.setAttribute('min', localToday);
+    }
+
+    function getNextDayStr(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        d.setDate(d.getDate() + 1);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function updateMinEndDate() {
+        if (startDateInput.value) {
+            endDateInput.setAttribute('min', getNextDayStr(startDateInput.value));
+        }
+    }
+
+    function calculateDuration() {
+        if (startDateInput.value && endDateInput.value) {
+            const start = new Date(startDateInput.value);
+            const end = new Date(endDateInput.value);
+            const diffTime = end - start;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            durationInput.value = diffDays > 0 ? diffDays : 0;
+        }
+    }
+
+    startDateInput.addEventListener('change', function() {
+        updateMinEndDate();
+        calculateDuration();
+    });
+
+    endDateInput.addEventListener('change', calculateDuration);
+
+    // Initial setup for date ranges
+    if (startDateInput.value) {
+        updateMinEndDate();
+    }
+
+    // Slot validation limits
+    if (isEdit) {
+        totalSlotsInput.setAttribute('min', Math.max(1, bookedSlots));
+    }
+
+    function updateAvailableSlotsMax() {
+        const total = parseInt(totalSlotsInput.value) || 0;
+        const maxAvailable = Math.max(0, total - bookedSlots);
+        availableSlotsInput.setAttribute('max', maxAvailable);
+    }
+
+    totalSlotsInput.addEventListener('input', updateAvailableSlotsMax);
+    
+    // Initial slots limits setup
+    updateAvailableSlotsMax();
+
+    form.addEventListener('submit', function(e) {
+        const total = parseInt(totalSlotsInput.value) || 0;
+        const available = parseInt(availableSlotsInput.value) || 0;
+        
+        if (available > total) {
+            alert('Available slots cannot exceed total slots.');
+            e.preventDefault();
+            return;
+        }
+
+        if (isEdit) {
+            if (total < bookedSlots) {
+                alert(`Total slots cannot be less than active bookings (${bookedSlots}).`);
+                e.preventDefault();
+                return;
+            }
+            const maxAvailable = total - bookedSlots;
+            if (available > maxAvailable) {
+                alert(`Available slots cannot exceed ${maxAvailable} (Total slots minus active bookings).`);
+                e.preventDefault();
+                return;
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

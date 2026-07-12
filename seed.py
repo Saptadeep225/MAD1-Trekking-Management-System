@@ -1,15 +1,11 @@
 import random
 from datetime import date, datetime, timedelta
-
 from werkzeug.security import generate_password_hash
-
 from app import app
 from models import db, User, Trek, Booking
 
 
 with app.app_context():
-
-
     Booking.query.delete()
     Trek.query.delete()
     User.query.filter(
@@ -17,8 +13,6 @@ with app.app_context():
     ).delete()
     db.session.commit()
     print("Old data cleared.")
-
-
 
     staff_names = [
         "Rahul",

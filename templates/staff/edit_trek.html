@@ -16,10 +16,17 @@
                 </div>
 
                 <form method="POST">
-                    <div class="mb-3">
+                     <div class="mb-3">
                         <label class="form-label fw-semibold">Available Slots</label>
-                        <input type="number" min="0" max="{{ trek.total_slots }}" class="form-control" name="available_slots" value="{{ trek.available_slots }}" required>
+                        <input type="number" min="0" max="{{ trek.total_slots - booked_slots }}" class="form-control" name="available_slots" value="{{ trek.available_slots }}" required>
+                        {% if booked_slots > 0 %}
+                        <div class="form-text text-warning">
+                            <i class="bi bi-exclamation-triangle"></i> This trek has <strong>{{ booked_slots }}</strong> active booking(s). 
+                            Available slots cannot exceed <strong>{{ trek.total_slots - booked_slots }}</strong>.
+                        </div>
+                        {% else %}
                         <div class="form-text">Maximum total slots configured for this trek: {{ trek.total_slots }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-4">

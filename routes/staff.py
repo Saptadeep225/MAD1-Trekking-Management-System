@@ -51,15 +51,19 @@ def update_trek(id):
     if trek.assigned_staff != current_user.id:
         flash("Access Denied!", "danger")
         return redirect(url_for("staff.assigned_treks"))
+    
+    booked_slots = Booking.query.filter_by(trek_id=trek.id, status="Booked").count()
     if request.method == "POST":
         try:
             available_slots = int(request.form["available_slots"])
             if available_slots < 0:
                 flash("Available slots cannot be negative.", "danger")
-                return render_template("staff/edit_trek.html", trek=trek)
-            if available_slots > trek.total_slots:
-                flash(f"Available slots cannot exceed total slots ({trek.total_slots}).", "danger")
-                return render_template("staff/edit_trek.html", trek=trek)
+                return render_template("staff/edit_trek.html", trek=trek, booked_slots=booked_slots)
+            
+            max_allowed_available = trek.total_slots - booked_slots
+            if available_slots > max_allowed_available:
+                flash(f"Available slots cannot exceed {max_allowed_available} (Total Slots minus current active bookings).", "danger")
+                return render_template("staff/edit_trek.html", trek=trek, booked_slots=booked_slots)
             
             trek.available_slots = available_slots
             new_status = request.form["status"]
@@ -75,10 +79,11 @@ def update_trek(id):
             return redirect(url_for("staff.assigned_treks"))
         except ValueError:
             flash("Invalid slots format.", "danger")
-            return render_template("staff/edit_trek.html", trek=trek)
+            return render_template("staff/edit_trek.html", trek=trek, booked_slots=booked_slots)
     return render_template(
         "staff/edit_trek.html",
-        trek=trek
+        trek=trek,
+        booked_slots=booked_slots
     )
 
 

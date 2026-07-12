@@ -2,7 +2,18 @@ from functools import wraps
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from models import db, User, Trek, Booking
-from datetime import datetime
+from datetime import datetime, date
+
+class DummyTrek:
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            if k in ['total_slots', 'available_slots', 'duration'] and v is not None:
+                try:
+                    v = int(v)
+                except (ValueError, TypeError):
+                    v = 0
+            setattr(self, k, v)
+
 
 
 admin = Blueprint("admin",__name__,url_prefix="/admin")
@@ -163,22 +174,90 @@ def treks():
 @admin_required
 def add_trek():
     if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        location = request.form.get("location", "").strip()
+        difficulty = request.form.get("difficulty", "Easy")
+        duration_str = request.form.get("duration", "")
+        total_slots_str = request.form.get("total_slots", "")
+        available_slots_str = request.form.get("available_slots", "")
+        start_date_str = request.form.get("start_date", "")
+        end_date_str = request.form.get("end_date", "")
+        description = request.form.get("description", "").strip()
+
+        # Construct dummy object to return to form on failure
+        temp_trek = DummyTrek(
+            name=name,
+            location=location,
+            difficulty=difficulty,
+            duration=duration_str,
+            total_slots=total_slots_str,
+            available_slots=available_slots_str,
+            start_date=start_date_str,
+            end_date=end_date_str,
+            description=description
+        )
+
+        if not name:
+            flash("Trek Name cannot be empty.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if not location:
+            flash("Location cannot be empty.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if not description:
+            flash("Description cannot be empty.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if difficulty not in ["Easy", "Moderate", "Hard"]:
+            flash("Invalid difficulty level selection.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+
+        try:
+            duration = int(duration_str)
+            total_slots = int(total_slots_str)
+            available_slots = int(available_slots_str)
+        except ValueError:
+            flash("Duration, Total Slots, and Available Slots must be valid integers.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+
+        if duration <= 0:
+            flash("Duration must be at least 1 day.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if total_slots <= 0:
+            flash("Total Slots must be at least 1.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if available_slots < 0:
+            flash("Available Slots cannot be negative.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if available_slots > total_slots:
+            flash("Available Slots cannot exceed Total Slots.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+
+        try:
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+        except ValueError:
+            flash("Invalid date format. Use YYYY-MM-DD.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+
+        if start_date < date.today():
+            flash("Start Date cannot be in the past.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if end_date <= start_date:
+            flash("End Date must be after the Start Date.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+        if duration != (end_date - start_date).days:
+            flash(f"Duration must match the difference between Start and End dates ({(end_date - start_date).days} days).", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek)
+
         trek = Trek(
-            name=request.form["name"],
-            location=request.form["location"],
-            difficulty=request.form["difficulty"],
-            duration=int(request.form["duration"]),
-            total_slots=int(request.form["total_slots"]),
-            available_slots=int(request.form["available_slots"]),
-            start_date=datetime.strptime(
-                request.form["start_date"],
-                "%Y-%m-%d"
-            ).date(),
-            end_date=datetime.strptime(
-                request.form["end_date"],
-                "%Y-%m-%d"
-            ).date(),
-            description=request.form["description"]
+            name=name,
+            location=location,
+            difficulty=difficulty,
+            duration=duration,
+            total_slots=total_slots,
+            available_slots=available_slots,
+            start_date=start_date,
+            end_date=end_date,
+            description=description
         )
         db.session.add(trek)
         db.session.commit()
@@ -222,28 +301,108 @@ def assign_staff(id):
 @admin_required
 def edit_trek(id):
     trek = Trek.query.get_or_404(id)
+    booked_slots = Booking.query.filter_by(trek_id=trek.id, status="Booked").count()
     if request.method == "POST":
-        trek.name = request.form["name"]
-        trek.location = request.form["location"]
-        trek.difficulty = request.form["difficulty"]
-        trek.duration = int(request.form["duration"])
-        trek.total_slots = int(request.form["total_slots"])
-        trek.available_slots = int(request.form["available_slots"])
-        trek.start_date = datetime.strptime(
-            request.form["start_date"],
-            "%Y-%m-%d"
-        ).date()
-        trek.end_date = datetime.strptime(
-            request.form["end_date"],
-            "%Y-%m-%d"
-        ).date()
-        trek.description = request.form["description"]
+        name = request.form.get("name", "").strip()
+        location = request.form.get("location", "").strip()
+        difficulty = request.form.get("difficulty", "Easy")
+        duration_str = request.form.get("duration", "")
+        total_slots_str = request.form.get("total_slots", "")
+        available_slots_str = request.form.get("available_slots", "")
+        start_date_str = request.form.get("start_date", "")
+        end_date_str = request.form.get("end_date", "")
+        description = request.form.get("description", "").strip()
+
+        temp_trek = DummyTrek(
+            id=trek.id,
+            name=name,
+            location=location,
+            difficulty=difficulty,
+            duration=duration_str,
+            total_slots=total_slots_str,
+            available_slots=available_slots_str,
+            start_date=start_date_str,
+            end_date=end_date_str,
+            description=description
+        )
+
+        if not name:
+            flash("Trek Name cannot be empty.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+        if not location:
+            flash("Location cannot be empty.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+        if not description:
+            flash("Description cannot be empty.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+        if difficulty not in ["Easy", "Moderate", "Hard"]:
+            flash("Invalid difficulty level selection.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        try:
+            duration = int(duration_str)
+            total_slots = int(total_slots_str)
+            available_slots = int(available_slots_str)
+        except ValueError:
+            flash("Duration, Total Slots, and Available Slots must be valid integers.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        if duration <= 0:
+            flash("Duration must be at least 1 day.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+        if total_slots <= 0:
+            flash("Total Slots must be at least 1.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+        if available_slots < 0:
+            flash("Available Slots cannot be negative.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+        if available_slots > total_slots:
+            flash("Available Slots cannot exceed Total Slots.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        if total_slots < booked_slots:
+            flash(f"Total Slots ({total_slots}) cannot be less than current active bookings ({booked_slots}).", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        max_allowed_available = total_slots - booked_slots
+        if available_slots > max_allowed_available:
+            flash(f"Available Slots ({available_slots}) cannot exceed {max_allowed_available} (Total Slots minus current active bookings).", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        try:
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+        except ValueError:
+            flash("Invalid date format. Use YYYY-MM-DD.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        if end_date <= start_date:
+            flash("End Date must be after the Start Date.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+        if duration != (end_date - start_date).days:
+            flash(f"Duration must match the difference between Start and End dates ({(end_date - start_date).days} days).", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        if start_date != trek.start_date and start_date < date.today():
+            flash("New Start Date cannot be in the past.", "danger")
+            return render_template("admin/trek_form.html", trek=temp_trek, booked_slots=booked_slots)
+
+        trek.name = name
+        trek.location = location
+        trek.difficulty = difficulty
+        trek.duration = duration
+        trek.total_slots = total_slots
+        trek.available_slots = available_slots
+        trek.start_date = start_date
+        trek.end_date = end_date
+        trek.description = description
         db.session.commit()
         flash("Trek updated successfully.", "success")
         return redirect(url_for("admin.treks"))
     return render_template(
         "admin/trek_form.html",
-        trek=trek
+        trek=trek,
+        booked_slots=booked_slots
     )
 
 
