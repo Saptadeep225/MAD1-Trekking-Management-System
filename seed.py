@@ -122,10 +122,7 @@ with app.app_context():
                     days=random.randint(1, 30)
                 ),
                 number_of_people=1,
-                status=random.choice([
-                    "Booked",
-                    "Completed"
-                ])
+                status="Booked"
             )
 
             trek.available_slots -= 1

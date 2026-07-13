@@ -38,16 +38,19 @@ def user_required(func):
 @login_required
 @user_required
 def dashboard():
-    total_bookings = Booking.query.filter_by(
-        user_id=current_user.id
+    total_bookings = Booking.query.join(Trek).filter(
+        Booking.user_id == current_user.id,
+        Trek.is_deleted == False
     ).count()
-    upcoming = Booking.query.filter_by(
-        user_id=current_user.id,
-        status="Booked"
+    upcoming = Booking.query.join(Trek).filter(
+        Booking.user_id == current_user.id,
+        Booking.status == "Booked",
+        Trek.is_deleted == False
     ).count()
-    completed = Booking.query.filter_by(
-        user_id=current_user.id,
-        status="Completed"
+    completed = Booking.query.join(Trek).filter(
+        Booking.user_id == current_user.id,
+        Booking.status == "Completed",
+        Trek.is_deleted == False
     ).count()
     return render_template(
         "user/dashboard.html",
@@ -65,7 +68,7 @@ def treks():
     search = request.args.get("search", "")
     difficulty = request.args.get("difficulty", "")
     location = request.args.get("location", "")
-    query = Trek.query.filter_by(status="Open")
+    query = Trek.query.filter_by(status="Open", is_deleted=False)
     if search:
         query = query.filter(
             Trek.name.contains(search)
@@ -128,9 +131,10 @@ def book(id):
 @login_required
 @user_required
 def bookings():
-    bookings = Booking.query.filter(
+    bookings = Booking.query.join(Trek).filter(
         Booking.user_id == current_user.id,
-        Booking.status != "Completed"
+        Booking.status != "Completed",
+        Trek.is_deleted == False
     ).order_by(Booking.booking_date.desc()).all()
     return render_template(
         "user/bookings.html",
@@ -142,9 +146,10 @@ def bookings():
 @login_required
 @user_required
 def history():
-    bookings = Booking.query.filter_by(
-        user_id=current_user.id,
-        status="Completed"
+    bookings = Booking.query.join(Trek).filter(
+        Booking.user_id == current_user.id,
+        Booking.status == "Completed",
+        Trek.is_deleted == False
     ).order_by(Booking.booking_date.desc()).all()
     return render_template(
         "user/history.html",
