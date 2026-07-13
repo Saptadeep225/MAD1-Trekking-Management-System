@@ -1,15 +1,15 @@
 {% extends "user/base.html" %}
-{% block title %}My Bookings{% endblock %}
+{% block title %}Trekking History{% endblock %}
 {% block content %}
 
 <div class="row align-items-center mb-4">
     <div class="col-md-6">
-        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">My Bookings</h2>
-        <p class="text-muted mb-0">Active and upcoming trek reservations.</p>
+        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">Trekking History</h2>
+        <p class="text-muted mb-0">Past completed treks and expedition records.</p>
     </div>
     <div class="col-md-6 mt-3 mt-md-0 text-md-end">
-        <a href="{{ url_for('user.history') }}" class="btn btn-outline-secondary fw-semibold">
-            View Trekking History
+        <a href="{{ url_for('user.bookings') }}" class="btn btn-outline-secondary fw-semibold">
+            View My Bookings
         </a>
     </div>
 </div>
@@ -22,7 +22,7 @@
                     <th class="ps-4">Booking ID</th>
                     <th>Trek Destination</th>
                     <th>Schedule Dates</th>
-                    <th>Booking Date</th>
+                    <th>Completed Date</th>
                     <th>Slots Reserved</th>
                     <th class="pe-4">Status</th>
                 </tr>
@@ -41,22 +41,16 @@
                             {{ booking.trek.end_date.strftime('%d %b %Y') if booking.trek.end_date else 'N/A' }}
                         </span>
                     </td>
-                    <td>{{ booking.booking_date.strftime('%d-%m-%Y') if booking.booking_date }}</td>
+                    <td>{{ booking.trek.end_date.strftime('%d-%m-%Y') if booking.trek.end_date else 'N/A' }}</td>
                     <td>{{ booking.number_of_people }} Person</td>
                     <td class="pe-4">
-                        {% if booking.status == "Booked" %}
-                            <span class="badge bg-success text-white">Booked</span>
-                        {% elif booking.status == "Cancelled" %}
-                            <span class="badge bg-secondary text-white">Cancelled</span>
-                        {% else %}
-                            <span class="badge bg-secondary text-white">{{ booking.status }}</span>
-                        {% endif %}
+                        <span class="badge bg-info text-white">Completed</span>
                     </td>
                 </tr>
             {% else %}
                 <tr>
                     <td colspan="6" class="text-center py-4 text-muted">
-                        You have no active bookings.
+                        No completed treks in your history yet.
                     </td>
                 </tr>
             {% endfor %}

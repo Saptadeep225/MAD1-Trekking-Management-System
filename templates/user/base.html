@@ -19,15 +19,28 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar">
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{{ url_for('user.dashboard') }}">Dashboard</a>
-                <a class="nav-link" href="{{ url_for('user.treks') }}">Explore Treks</a>
-                <a class="nav-link" href="{{ url_for('user.bookings') }}">My Bookings</a>
-                <a class="nav-link" href="{{ url_for('user.profile') }}">Profile</a>
-                <a class="nav-link ms-lg-3 btn btn-light btn-sm px-3 py-1 fw-semibold text-dark mt-2 mt-lg-0" href="{{ url_for('auth.logout') }}" style="color: var(--primary);">
-                    Logout
-                </a>
-            </div>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user.dashboard') }}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user.treks') }}">Explore Treks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user.bookings') }}">My Bookings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user.history') }}">Trekking History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user.profile') }}">Profile</a>
+                </li>
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                    <a class="btn btn-light btn-sm px-3 py-1 fw-semibold" href="{{ url_for('auth.logout') }}" style="color: var(--primary);">
+                        Logout
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

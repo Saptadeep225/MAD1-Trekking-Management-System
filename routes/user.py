@@ -128,11 +128,26 @@ def book(id):
 @login_required
 @user_required
 def bookings():
-    bookings = Booking.query.filter_by(
-        user_id=current_user.id
-    ).all()
+    bookings = Booking.query.filter(
+        Booking.user_id == current_user.id,
+        Booking.status != "Completed"
+    ).order_by(Booking.booking_date.desc()).all()
     return render_template(
         "user/bookings.html",
+        bookings=bookings
+    )
+
+
+@user.route("/history")
+@login_required
+@user_required
+def history():
+    bookings = Booking.query.filter_by(
+        user_id=current_user.id,
+        status="Completed"
+    ).order_by(Booking.booking_date.desc()).all()
+    return render_template(
+        "user/history.html",
         bookings=bookings
     )
 

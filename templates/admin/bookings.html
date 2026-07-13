@@ -4,7 +4,7 @@
 
 <div class="row align-items-center mb-4">
     <div class="col-md-6">
-        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">Bookings History</h2>
+        <h2 class="fw-bold mb-1" style="color: var(--primary); letter-spacing: -0.02em;">Bookings Management</h2>
         <p class="text-muted mb-0">Overview of all trek bookings made by participants.</p>
     </div>
     <div class="col-md-6 mt-3 mt-md-0">
@@ -25,6 +25,7 @@
                     <th class="ps-4">Booking ID</th>
                     <th>User / Trekker</th>
                     <th>Trek Destination</th>
+                    <th>Schedule Dates</th>
                     <th>Booking Date</th>
                     <th>Slots Booked</th>
                     <th class="pe-4">Status</th>
@@ -36,6 +37,15 @@
                     <td class="ps-4 text-muted fw-semibold">#{{ booking.id }}</td>
                     <td class="fw-semibold">{{ booking.user.name }}</td>
                     <td class="fw-bold" style="color: var(--primary);">{{ booking.trek.name }}</td>
+                    <td>
+                        <span class="small fw-semibold text-dark">
+                            {{ booking.trek.start_date.strftime('%d %b %Y') if booking.trek.start_date else 'N/A' }}
+                        </span>
+                        <span class="text-muted mx-1">to</span>
+                        <span class="small fw-semibold text-dark">
+                            {{ booking.trek.end_date.strftime('%d %b %Y') if booking.trek.end_date else 'N/A' }}
+                        </span>
+                    </td>
                     <td>{{ booking.booking_date.strftime('%d-%m-%Y') if booking.booking_date }}</td>
                     <td>{{ booking.number_of_people }} Person</td>
                     <td class="pe-4">
@@ -43,6 +53,8 @@
                             <span class="badge bg-success text-white">Booked</span>
                         {% elif booking.status == "Completed" %}
                             <span class="badge bg-info text-white">Completed</span>
+                        {% elif booking.status == "Cancelled" %}
+                            <span class="badge bg-secondary text-white">Cancelled</span>
                         {% else %}
                             <span class="badge bg-secondary text-white">{{ booking.status }}</span>
                         {% endif %}
@@ -50,7 +62,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="6" class="text-center py-4 text-muted">
+                    <td colspan="7" class="text-center py-4 text-muted">
                         No bookings found matching your search.
                     </td>
                 </tr>

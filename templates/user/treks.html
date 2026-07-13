@@ -53,8 +53,18 @@
                         {% endif %}
                     </div>
                     
-                    <p class="text-muted small mb-3">
+                    <p class="text-muted small mb-1">
                         <strong>Location:</strong> {{ trek.location }}
+                    </p>
+                    <p class="text-muted small mb-3">
+                        <strong>Dates:</strong> 
+                        <span class="fw-semibold text-dark">
+                            {{ trek.start_date.strftime('%d %b %Y') if trek.start_date else 'N/A' }}
+                        </span>
+                        <span class="text-muted">to</span>
+                        <span class="fw-semibold text-dark">
+                            {{ trek.end_date.strftime('%d %b %Y') if trek.end_date else 'N/A' }}
+                        </span>
                     </p>
                     
                     <div class="row g-2 mb-3 bg-light rounded p-2 text-center border">

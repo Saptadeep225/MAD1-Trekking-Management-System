@@ -49,6 +49,9 @@ def admin_dashboard():
         role="staff",
         status="pending"
     ).count()
+    recent_bookings = Booking.query.order_by(
+        Booking.booking_date.desc()
+    ).limit(10).all()
 
     return render_template(
         "admin/dashboard.html",
@@ -56,7 +59,8 @@ def admin_dashboard():
         total_staff=total_staff,
         total_treks=total_treks,
         total_bookings=total_bookings,
-        pending_staff=pending_staff
+        pending_staff=pending_staff,
+        recent_bookings=recent_bookings
     )
 
 
@@ -435,9 +439,9 @@ def bookings():
         bookings = Booking.query.join(User, Booking.user_id == User.id).join(Trek, Booking.trek_id == Trek.id).filter(
             (User.name.contains(search)) |
             (Trek.name.contains(search))
-        ).all()
+        ).order_by(Booking.booking_date.desc()).all()
     else:
-        bookings = Booking.query.all()
+        bookings = Booking.query.order_by(Booking.booking_date.desc()).all()
     return render_template(
         "admin/bookings.html",
         bookings=bookings,

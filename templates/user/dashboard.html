@@ -41,9 +41,14 @@
 <div class="mt-4 p-4 text-center bg-white rounded shadow-sm border">
     <h5 class="fw-bold" style="color: var(--primary);">Looking for your next adventure?</h5>
     <p class="text-muted mb-3">Check out our catalog of hand-crafted trekking expeditions across scenic destinations.</p>
-    <a href="{{ url_for('user.treks') }}" class="btn btn-custom px-4 py-2 fw-semibold">
-        Explore Trek Catalog &rarr;
-    </a>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a href="{{ url_for('user.treks') }}" class="btn btn-custom px-4 py-2 fw-semibold">
+            Explore Trek Catalog &rarr;
+        </a>
+        <a href="{{ url_for('user.history') }}" class="btn btn-outline-secondary px-4 py-2 fw-semibold">
+            View Trekking History
+        </a>
+    </div>
 </div>
 
 {% endblock %}
